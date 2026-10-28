@@ -1,0 +1,56 @@
+<!DOCTYPE html>\
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <meta name= "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>Test Web</title>
+</head>
+<body>
+    <h2>Gemini Generate Test</h2>
+    <textarea id = "userInput" rows = "4" cols = "40" placeholder = "Please Enter Text..."></textarea>
+    <button onclick = "sendRequest()">Send</button><!-- AI生成的按鈕 -->
+    <h3>Gemini Response</h3>
+    <div id = "output" style = "white-space: pre-wrap; background: #f0f0f0; padding: 10px;"></div>
+    <!-- 後端AI生成的程式碼 -->
+    <script>
+        async function sendRequest() {
+            const input = document.getElementById('userInput');
+            const output = document.getElementById('output');
+
+            if(!prompt){
+                alert("Please Enter Text.");
+                return;
+            }
+
+            output.innerText = "Generating...";
+
+            const payload = {
+                prompt: userInput.value,
+                system_instruction: "你是一個簡潔明瞭的助理。"
+            };
+
+            try{
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const json = await response.json();
+
+                if(response.ok){
+                    output.innerText = json.reply;
+                }
+                else{
+                    output.innerText = "Error:" + json.detail;
+                }
+            }
+            catch(error){
+                outputDiv.innerText = 'Connecting Error：' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
